@@ -150,3 +150,65 @@ form {
     opacity: 1;
   }
 }
+
+.clear-data-button {
+  @apply px-6 py-3 border-2 border-gray-300 text-gray-600 rounded-full transition-all duration-300 ease-in-out;
+  @apply hover:border-[#AB8C95] hover:bg-[#AB8C95] hover:text-white;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  font-weight: 500;
+}
+
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4;
+}
+
+.modal-content {
+  @apply bg-white rounded-2xl shadow-2xl max-w-md w-full;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-header {
+  @apply p-6 pb-0;
+}
+
+.modal-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.modal-body {
+  @apply px-6 py-4;
+}
+
+.modal-footer {
+  @apply flex gap-3 p-6 pt-4;
+}
+
+.modal-cancel-btn {
+  @apply flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-full transition-all duration-300 ease-in-out font-medium;
+  @apply hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.modal-confirm-btn {
+  @apply flex-1 px-4 py-3 text-white rounded-full transition-all duration-300 ease-in-out font-medium;
+  background: linear-gradient(to bottom, #8e98ff, #606beb);
+}
+
+.modal-confirm-btn:hover {
+  background: linear-gradient(to bottom, #717dff, #4957eb);
+  @apply shadow-lg;
+}
+
+.modal-confirm-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

@@ -1,6 +1,7 @@
 import type { Route } from "./+types/home";
 import Navbar from "../components/Navbar";
 import ResumeCard from "../components/ResumeCard";
+import Modal from "../components/Modal";
 import {usePuterStore} from "../lib/puter";
 import {Link, useNavigate} from "react-router";
 import {useEffect, useState} from "react";
@@ -17,6 +18,8 @@ export default function Home() {
   const navigate = useNavigate();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loadingResumes, setLoadingResumes] = useState(false);
+  const [isWiping, setIsWiping] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if(!auth.isAuthenticated) navigate('/auth?next=/');
@@ -39,6 +42,20 @@ export default function Home() {
     loadResumes()
   }, []);
 
+  const handleWipeData = async () => {
+    setIsWiping(true);
+    setShowDeleteModal(false);
+    try {
+      await kv.flush();
+      setResumes([]);
+    } catch (error) {
+      console.error("Failed to wipe data:", error);
+      alert("Failed to clear data. Please try again.");
+    } finally {
+      setIsWiping(false);
+    }
+  };
+
   return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
     <Navbar />
 
@@ -58,11 +75,23 @@ export default function Home() {
       )}
 
       {!loadingResumes && resumes.length > 0 && (
-        <div className="resumes-section">
-          {resumes.map((resume) => (
-              <ResumeCard key={resume.id} resume={resume} />
-          ))}
-        </div>
+        <>
+          <div className="resumes-section">
+            {resumes.map((resume) => (
+                <ResumeCard key={resume.id} resume={resume} />
+            ))}
+          </div>
+          
+          <div className="flex flex-col items-center justify-center mt-10 gap-4">
+            <button 
+              onClick={() => setShowDeleteModal(true)}
+              disabled={isWiping}
+              className="clear-data-button"
+            >
+              {isWiping ? "Clearing Data..." : "Clear All Data"}
+            </button>
+          </div>
+        </>
       )}
 
       {!loadingResumes && resumes?.length === 0 && (
@@ -73,5 +102,16 @@ export default function Home() {
           </div>
       )}
     </section>
+
+    <Modal
+      isOpen={showDeleteModal}
+      onClose={() => setShowDeleteModal(false)}
+      onConfirm={handleWipeData}
+      title="Delete All Resume Data"
+      message="Are you sure you want to delete all resume data? This action cannot be undone."
+      confirmText="Delete"
+      cancelText="Cancel"
+      isLoading={isWiping}
+    />
   </main>
 }
